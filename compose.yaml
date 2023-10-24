@@ -1,0 +1,33 @@
+version: "3.8"
+
+services:
+  #Это конфигурация Docker Compose для запуска сервера Synapse, используемого протоколом Matrix.
+  synapse:
+    # command: generate
+    container_name: synapse
+    deploy:
+      restart_policy:
+        condition: always
+        delay: 5s
+    env_file: synapse.env
+    image: matrixdotorg/synapse:latest
+    labels:
+      com.centurylinklabs.watchtower.enable: "true"
+      traefik.enable: "true"
+      traefik.http.routers.synapse.entrypoints: "websecure"
+      traefik.http.routers.synapse.rule: "Host(`${DOMAIN}`) && PathPrefix(`/_matrix/`, `/_synapse/client/`)"
+      traefik.http.routers.synapse.service: "synapse"
+      traefik.http.routers.synapse.tls.certresolver: "letsencrypt"
+      traefik.http.services.synapse.loadbalancer.server.port: "8008"
+    volumes:
+      - "./synapse/homeserver.yaml:/config/homeserver.yaml"
+      - "./synapse/synapse.log.config:/data/synapse.log.config"
+      - "./synapse/synapse.signing.key:/data/synapse.signing.key"
+      - "/mnt/docker-volumes/chat/synapse/media_store:/data/media_store"
+      - "./synapse/app_service/discord.yaml:/data/mautrix-discord-registration.yaml"
+      - "./synapse/app_service/telegram.yaml:/data/mautrix-telegram-registration.yaml"
+
+networks:
+  external:
+    external: true
+    name: $NETWORK

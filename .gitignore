@@ -1,0 +1,6 @@
+synapse.env
+.env
+synapse/app_service/*.yaml
+synapse/*.log.config
+synapse/*.signing.key
+synapse/homeserver.yaml
