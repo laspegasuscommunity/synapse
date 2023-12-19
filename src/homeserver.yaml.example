@@ -1,0 +1,211 @@
+# enable_3pid_changes: true
+admin_contact: "mailto:admins@${DOMAIN}"
+allow_device_name_lookup_over_federation: false
+allow_public_rooms_over_federation: true
+allowed_avatar_mimetypes: ["image/png", "image/jpeg", "image/gif", "image/svg"]
+default_identity_server: https://matrix.org
+dynamic_thumbnails: true
+enable_media_repo: true
+enable_registration: false
+enable_registration_captcha: false
+event_cache_size: 15K
+federation_rr_transactions_per_room_per_second: 40
+filter_timeline_limit: 5000
+gc_min_interval: [0.5s, 30s, 1m]
+gc_thresholds: [700, 10, 10]
+log_config: "/data/synapse.log.config"
+max_avatar_size: 10M
+max_image_pixels: 35M
+max_upload_size: 1024M
+media_store_path: "/data/media_store"
+pid_file: /data/homeserver.pid
+public_baseurl: https://${DOMAIN}/
+recaptcha_private_key: "PRIVATEKEY"
+recaptcha_public_key: "PUBLICKEY"
+registration_shared_secret: "SECRET"
+report_stats: "no"
+server_name: "${DOMAIN}"
+signing_key_path: "/data/synapse.signing.key"
+url_preview_enabled: true
+url_preview_ip_range_blacklist:
+  - '127.0.0.0/8'
+  - '10.0.0.0/8'
+  - '172.16.0.0/12'
+  - '192.168.0.0/16'
+  - '100.64.0.0/10'
+  - '192.0.0.0/24'
+  - '169.254.0.0/16'
+  - '192.88.99.0/24'
+  - '198.18.0.0/15'
+  - '192.0.2.0/24'
+  - '198.51.100.0/24'
+  - '203.0.113.0/24'
+  - '224.0.0.0/4'
+  - '::1/128'
+  - 'fe80::/10'
+  - 'fc00::/7'
+  - '2001:db8::/32'
+  - 'ff00::/8'
+  - 'fec0::/10'
+url_preview_url_blacklist:
+  - scheme: 'http'
+  - netloc: '^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$'
+url_preview_accept_language:
+  - "ru-RU"
+  - "ru;q=0.9"
+  - "en-UK;q=0.8"
+  - "en-US;q=0.7"
+  - "fr;q=0.6"
+  - "*;q=0.5"
+thumbnail_sizes:
+  - width: 32
+    height: 32
+    method: crop
+  - width: 96
+    height: 96
+    method: crop
+  - width: 320
+    height: 240
+    method: scale
+  - width: 640
+    height: 480
+    method: scale
+  - width: 800
+    height: 600
+    method: scale
+trusted_key_servers:
+  - server_name: "matrix.org"
+listeners:
+  - port: 8008
+    tls: false
+    type: http
+    x_forwarded: true
+    # bind_addresses: ['::1', '127.0.0.1']
+    resources:
+      - names: [media, client, federation, metrics]
+        compress: false
+  - port: 9000
+    type: metrics
+    # bind_addresses: ['::1', '127.0.0.1']
+enable_metrics: true
+database:
+  name: psycopg2
+  args:
+    cp_max: 10
+    cp_min: 5
+    database: DATABASE
+    host: synapse-postgres
+    password: PASSWORD
+    user: USER
+presence:
+  enabled: true
+auto_join_rooms:
+  - "#room:${DOMAIN}"
+  - "#chat:${DOMAIN}"
+  - "#channel:${DOMAIN}"
+caches:
+  global_factor: 1.0
+  per_cache_factors:
+    get_users_who_share_room_with_user: 2.0
+  sync_response_cache_duration: 2m
+  cache_autotuning:
+    max_cache_memory_usage: 1024M
+    target_cache_memory_usage: 758M
+    min_cache_ttl: 5m
+rc_message:
+  per_second: 0.5
+  burst_count: 15
+rc_registration:
+  per_second: 0.15
+  burst_count: 2
+rc_registration_token_validity:
+  per_second: 0.3
+  burst_count: 6
+rc_login:
+  address:
+    per_second: 0.15
+    burst_count: 5
+  account:
+    per_second: 0.18
+    burst_count: 4
+  failed_attempts:
+    per_second: 0.19
+    burst_count: 7
+rc_admin_redaction:
+  per_second: 1
+  burst_count: 50
+rc_joins:
+  local:
+    per_second: 0.2
+    burst_count: 15
+  remote:
+    per_second: 0.03
+    burst_count: 12
+rc_joins_per_room:
+  per_second: 1
+  burst_count: 10
+rc_3pid_validation:
+  per_second: 0.003
+  burst_count: 5
+rc_invites:
+  per_room:
+    per_second: 0.5
+    burst_count: 5
+  per_user:
+    per_second: 0.004
+    burst_count: 3
+  per_issuer:
+    per_second: 0.5
+    burst_count: 5
+rc_third_party_invite:
+  per_second: 0.2
+  burst_count: 10
+rc_federation:
+  window_size: 750
+  sleep_limit: 15
+  sleep_delay: 400
+  reject_limit: 40
+  concurrent: 5
+oidc_providers:
+    - idp_id: authentik
+      idp_name: authentik
+      discover: true
+      issuer: "https://authentik.${DOMAIN}/application/o/element/"
+      client_id: "ID"
+      client_secret: "SECRET"
+      scopes:
+          - "openid"
+          - "profile"
+          - "email"
+      user_mapping_provider:
+          config:
+              localpart_template: "{{ user.preferred_username }}"
+              display_name_template: "{{ user.name|capitalize }}"
+password_config:
+  enabled: false
+  localdb_enabled: false
+app_service_config_files:
+- /data/mautrix-discord-registration.yaml
+- /data/mautrix-telegram-registration.yaml
+federation:
+  client_timeout: 180s
+  max_short_retry_delay: 7s
+  max_long_retry_delay: 100s
+  max_short_retries: 5
+  max_long_retries: 20
+  destination_min_retry_interval: 30s
+  destination_retry_multiplier: 5
+  destination_max_retry_interval: 12h
+federation_client_minimum_tls_version: "1.2"
+retention:
+  enabled: true
+  default_policy:
+    min_lifetime: 1d
+    max_lifetime: 1y
+  allowed_lifetime_min: 1d
+  allowed_lifetime_max: 1y
+  purge_jobs:
+    - longest_max_lifetime: 3d
+      interval: 12h
+    - shortest_max_lifetime: 3d
+      interval: 1d

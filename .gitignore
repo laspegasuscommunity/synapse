@@ -1,6 +1,6 @@
 .env
 synapse.env
-synapse/*.log.config
-synapse/*.signing.key
-synapse/app_service/*.yaml
-synapse/homeserver.yaml
+src/*.log.config
+src/*.signing.key
+src/app_service/*.yaml
+src/homeserver.yaml
