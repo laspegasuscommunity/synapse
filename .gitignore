@@ -3,4 +3,5 @@ synapse.env
 src/*.log.config
 src/*.signing.key
 src/app_service/*.yaml
+src/homeserver.log
 src/homeserver.yaml
