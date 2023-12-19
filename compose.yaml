@@ -20,23 +20,17 @@ services:
       traefik.http.routers.synapse.tls.certresolver: "letsencrypt"
       traefik.http.services.synapse.loadbalancer.server.port: "8008"
     volumes:
-      # - "./src/homeserver.log:/var/log/matrix-synapse/homeserver.log"
-      - "./src/homeserver.yaml:/config/homeserver.yaml"
-      - "./src/laspegasus.log.config:/data/laspegasus.log.config"
-      - "./src/laspegasus.signing.key:/data/laspegasus.signing.key"
-      - "/mnt/docker-volumes/chat/synapse/media_store:/data/media_store"
       - "./src/app_service/discord.yaml:/data/mautrix-discord-registration.yaml"
       - "./src/app_service/telegram.yaml:/data/mautrix-telegram-registration.yaml"
+      - "./src/homeserver.log:/var/log/matrix-synapse/homeserver.log"
+      - "./src/homeserver.yaml:/config/homeserver.yaml"
+      - "./src/synapse.log.config:/data/synapse.log.config"
+      - "./src/synapse.signing.key:/data/synapse.signing.key"
+      - "/mnt/docker-volumes/chat/synapse/media_store:/data/media_store"
     ports:
       - "8008:8008"
       - "8448:8448"
       - "9000:9000"
-      # - "3478:3478"
-      # - "3478:3478/udp"
-      # - "49152-65535/udp"
-      # - "5349:5349"
-      # - "5349:5349/udp"
-    # user: "$UID:$GID"
 
 networks:
   default:
